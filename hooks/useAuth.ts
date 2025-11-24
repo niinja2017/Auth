@@ -1,18 +1,21 @@
 import callApi from "@/helpers/callApi"
+import { updatePhoneVerifyToken } from "@/store/slice/auth"
 import type { Auth } from "@/typescript/type"
 import { AxiosRequestConfig } from "axios"
 import { useRouter } from "next/router"
 import { object, AnySchema } from "yup"
+import { useAppDispatch } from "./useRedux"
 
 
-const useFormik = (push: string, url: string, values: Record<string, AnySchema> , setCookies?: any) => {
+const useFormik = (push: string, url: string, validationValues: Record<string, AnySchema>, instanceValue: Auth) => {
     const router = useRouter()
+    const dispatch = useAppDispatch()
 
-    const initialValues = {
-        name: '',
-        email: '',
-        password: ''
+    const setPhoneVerifyToken = (token: string) => {
+        dispatch(updatePhoneVerifyToken(token))
     }
+
+    const initialValues = instanceValue
 
     const onSubmit = async (values: AxiosRequestConfig<Auth>) => {
 
@@ -20,25 +23,32 @@ const useFormik = (push: string, url: string, values: Record<string, AnySchema> 
         // SignUp
         if (url == '/auth/register') {
             const res = await callApi().post(url, values)
+            console.log(res)
             if (res.status == 201) {
-                router.push('/auth/login')
+                // router.push(push)
             }
         }
         // Login
+        else if (url == '/auth/login') {
+            const res = await callApi().post(url, values)
+            setPhoneVerifyToken(res?.data?.token)
+            if (res.status == 200) {
+                router.push(push)
+            }
+        }
+
+        // Code Phone Verify
         else {
             const res = await callApi().post(url, values)
+            console.log(res)
             if (res.status == 200) {
-                router.push('/')
-                setCookies('shopy-token' , res.data.token , {
-                    'maxAge' : 3600 * 24 * 30,
-                    'domain' : 'localhost',
-                    'path' : '/'
-                })
+                router.push(push)
             }
+
         }
     }
 
-    const validationSchema = object().shape(values)
+    const validationSchema = object().shape(validationValues)
 
     return {
         onSubmit,

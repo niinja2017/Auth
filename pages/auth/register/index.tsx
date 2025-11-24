@@ -1,21 +1,20 @@
 import InputItem from "@/components/inputItem"
 import useAuth from "@/hooks/useAuth"
 import { Form, Formik } from "formik"
+import Link from "next/link"
 import { string } from "yup"
 
 
 
 const Register = () => {
-    const SignFormik = useAuth('/auth/login', '/auth/register' , {
+    const SignFormik = useAuth(/* push */ '/auth/login', /* url */ '/auth/register', /* validation */ {
         name: string().required(),
-        email: string().required().email(),
-        password: string().required().min(8)
-    })
+        phone: string().required().length(11).matches(/^09\d{9}$/)
+    },/* initialValues */ { name: '', phone: '' })
 
     const InputList = [
         { label: 'نام :', name: 'name', placeholder: 'لطفا نام خود را وارد کنید' },
-        { label: 'ایمیل :', name: 'email', placeholder: 'لطفا ایمیل خود را وارد کنید', type: 'email' },
-        { label: 'پسورد :', name: 'password', placeholder: 'لطفا پسورد خود را وارد کنید', type: 'password' }
+        { label: 'تلفن :', name: 'phone', placeholder: 'لطفا ایمیل خود را وارد کنید', type: 'text' },
     ]
 
 
@@ -29,6 +28,10 @@ const Register = () => {
 
                     <div className="flex justify-center mb-8">
                         <button type="submit" className="cursor-pointer py-3 w-full text-white font-bold rounded-4xl bg-linear-to-r from-[#61D8DE] via-[#7774E5] to-[#E839F6]">ثبت نام</button>
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Link className="text-gray-600" href={'/auth/login'}>----- Login -----</Link>
                     </div>
                 </Form>
             </Formik>

@@ -1,23 +1,21 @@
 import InputItem from "@/components/inputItem"
 import useAuth from "@/hooks/useAuth"
 import { Form, Formik } from "formik"
-import { useCookies } from "react-cookie"
+import Link from "next/link"
 import { string } from "yup"
 
 
 
 
 const Signing = () => {
-    const [cookies, setCookies] = useCookies(['shopy-token'])
-    
-    const LoginFormik = useAuth('/', '/auth/login', {
-        email: string().required().email(),
-        password: string().required().min(8)
-    }, setCookies)
+    const LoginFormik = useAuth(/* push */ '/auth/login/step-two', /* url */ '/auth/login', /* validation */ {
+        phone: string().required().length(11).matches(/^09\d{9}$/)
+    },/* initialValues */ { phone: '' })
+
+
 
     const InputList = [
-        { label: 'ایمیل :', name: 'email', placeholder: 'لطفا ایمیل خود را وارد کنید', type: 'email' },
-        { label: 'پسورد :', name: 'password', placeholder: 'لطفا پسورد خود را وارد کنید', type: 'password' }
+        { label: 'تلفن :', name: 'phone', placeholder: 'لطفا ایمیل خود را وارد کنید', type: 'text' },
     ]
 
 
@@ -31,6 +29,10 @@ const Signing = () => {
 
                     <div className="flex justify-center mb-8">
                         <button type="submit" className="cursor-pointer py-3 w-full text-white font-bold rounded-4xl bg-linear-to-r from-[#61D8DE] via-[#7774E5] to-[#E839F6]">ورود</button>
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Link className="text-gray-600" href={'/auth/register'}>----- Sign UP -----</Link>
                     </div>
                 </Form>
             </Formik>
