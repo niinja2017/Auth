@@ -5,14 +5,10 @@ import { useRouter } from "next/router"
 import { object, AnySchema } from "yup"
 
 
-const useFormik = (push: string, url: string, values: Record<string, AnySchema> , setCookies?: any) => {
+const useFormik = (push: string, url: string, validationValues: Record<string, AnySchema> , instanceValue : Auth) => {
     const router = useRouter()
 
-    const initialValues = {
-        name: '',
-        email: '',
-        password: ''
-    }
+    const initialValues = instanceValue
 
     const onSubmit = async (values: AxiosRequestConfig<Auth>) => {
 
@@ -29,16 +25,11 @@ const useFormik = (push: string, url: string, values: Record<string, AnySchema> 
             const res = await callApi().post(url, values)
             if (res.status == 200) {
                 router.push('/')
-                setCookies('shopy-token' , res.data.token , {
-                    'maxAge' : 3600 * 24 * 30,
-                    'domain' : 'localhost',
-                    'path' : '/'
-                })
             }
         }
     }
 
-    const validationSchema = object().shape(values)
+    const validationSchema = object().shape(validationValues)
 
     return {
         onSubmit,

@@ -10,7 +10,7 @@ const Register = () => {
         name: string().required(),
         email: string().required().email(),
         password: string().required().min(8)
-    })
+    } , {name : '' , email : '' , password : ''})
 
     const InputList = [
         { label: 'نام :', name: 'name', placeholder: 'لطفا نام خود را وارد کنید' },

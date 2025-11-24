@@ -8,12 +8,10 @@ import { string } from "yup"
 
 
 const Signing = () => {
-    const [cookies, setCookies] = useCookies(['shopy-token'])
-    
     const LoginFormik = useAuth('/', '/auth/login', {
         email: string().required().email(),
         password: string().required().min(8)
-    }, setCookies)
+    } , {email : '' , password : ''})
 
     const InputList = [
         { label: 'ایمیل :', name: 'email', placeholder: 'لطفا ایمیل خود را وارد کنید', type: 'email' },
